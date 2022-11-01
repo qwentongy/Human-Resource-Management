@@ -2,6 +2,7 @@ import axios from 'axios'
 import { MessageBox, Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
+import router from '@/router'
 
 // create an axios instance
 const service = axios.create({
@@ -23,7 +24,8 @@ service.interceptors.request.use(
       // ['X-Token'] is a custom headers key
       // please modify it according to the actual situation
       // 若有则把token拼接在请求头加入X-Token,值为token值
-      config.headers['X-Token'] = getToken()
+      // config.headers['X-Token'] = getToken()
+      config.headers['Authorization'] = `Bearer ${store.getters.token}`
     }
     return config
   },
@@ -50,14 +52,14 @@ service.interceptors.response.use(
    * You can also judge the status by HTTP Status Code
    */
   response => {
-    // 保存数据
+    // 保存数据(另一方面,拿数据方便,这里直接把数据拿出来,返回res)
     const res = response.data
 
     // if the custom code is not 20000, it is judged as an error.
     // 判定状态 20000是和后台商量好直接判断code
     // 重点:http响应过程都是ok的,但是逻辑上有错误
     // 例如登录->账号密码->发给后台请求成功了,但是后台发现账号或密码错了,就返回其他的code
-    if (res.code !== 20000) {   // 不等于20000就证明有错误
+    if (res.code !== 20000 && res.code !== 10000 ) {   // 不等于20000就证明有错误
       Message({
         message: res.message || 'Error',
         type: 'error',
@@ -66,16 +68,16 @@ service.interceptors.response.use(
 
       // 50008: Illegal token; 50012: Other clients logged in; 50014: Token expired;
       // 错误提示
-      if (res.code === 50008 || res.code === 50012 || res.code === 50014) {
+      if (res.code === 50008 || res.code === 50012 || res.code === 50014 || res.code === 10002) {
         // to re-login
-        MessageBox.confirm('You have been logged out, you can cancel to stay on this page, or log in again', 'Confirm logout', {
+        MessageBox.confirm('身份已过期,请重新登录', {
           confirmButtonText: 'Re-Login',
           cancelButtonText: 'Cancel',
           type: 'warning'
         }).then(() => {
-          store.dispatch('user/resetToken').then(() => {
-            location.reload()
-          })
+          // store.dispatch('user/resetToken').then(() => {
+          //   location.reload()
+          // })
         })
       }
       return Promise.reject(new Error(res.message || 'Error'))
@@ -87,9 +89,15 @@ service.interceptors.response.use(
     }
   },
   error => {
+    // 新语法,需要babel支持,左侧有值才会继续.下去
+    // token过期,跳转
+    if(error?.response?.data?.code == 10002) {
+      router.replace(`/login?redirect = ${router.currentRoute.fullPath}`)
+    }
+    console.dir(error);
     console.log('err' + error) // for debug
     Message({
-      message: error.message,
+      message: error.response && error.response.data && error.response.data.message || error.message,
       type: 'error',
       duration: 5 * 1000
     })

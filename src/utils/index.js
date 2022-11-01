@@ -129,3 +129,27 @@ export function param2Obj(url) {
   })
   return obj
 }
+
+
+// 递归转树的函数
+/*
+ * 参数1：数组不要在里面写死，所以应该传进来
+ * 参数2：要查找的pid不要写死，传什么就查什么
+ */
+export function arrayToTree (arr, pid) {
+  // 装节点的数组
+  const list = []
+  // 遍历数组找到这一级的节点
+  arr.forEach(v => {
+    if (v.pid === pid) {
+      list.push(v)
+      // 1级里有2级，2级里可能有3级.....
+      const children = arrayToTree(arr, v.id)
+      if (children.length > 0) {
+        v.children = children
+      }
+    }
+  })
+  // 返回结果
+  return list
+}

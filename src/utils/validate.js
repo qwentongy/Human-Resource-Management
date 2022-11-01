@@ -12,13 +12,10 @@ export function isExternal(path) {
 }
 
 /**
- * @param {string} str
+ * @param {string} phone
  * @returns {Boolean}
  */
 // 判断外面传入的名字是否是admin或者editor
-export function validUsername(str) {
-  const valid_map = ['admin', 'editor']
-  // indexOf():在数组中查找首次出现目标的下标,没有返回-1
-  // trim():去除字符串左右两边的空格
-  return valid_map.indexOf(str.trim()) >= 0
+export function validMobile(phone) {
+  return /^(13[0-9]|14[579]|15[0-3,5-9]|16[6]|17[0135678]|18[0-9]|19[89])\d{8}$/.test(phone)
 }

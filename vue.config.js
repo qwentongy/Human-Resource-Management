@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Admin Template' // page title
+const name = defaultSettings.title || '人力资源管理系统' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -30,13 +30,21 @@ module.exports = {
   lintOnSave: process.env.NODE_ENV === 'development',
   productionSourceMap: false,
   devServer: {
-    port: port,
+    port: port,   // 端口号
     open: true,
     overlay: {
       warnings: false,
       errors: true
     },
     // before: require('./mock/mock-server.js')
+    // 开启代理服务器
+    proxy: {
+      "/dev": {
+        // target: "http://ihrm-java.itheima.net/api",
+        target: "http://localhost:3000/api",
+        pathRewrite: {"^/dev" : ""}
+      }
+    }
   },
   configureWebpack: {
     // provide the app's title in webpack's name field, so that

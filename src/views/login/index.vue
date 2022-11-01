@@ -3,18 +3,20 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" auto-complete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">Login Form</h3>
+        <h3 class="title">
+          <img src="@/assets/common/login-logo.png" alt="">
+        </h3>
       </div>
 
-      <el-form-item prop="username">
+      <el-form-item prop="mobile">
         <span class="svg-container">
           <svg-icon icon-class="user" />
         </span>
         <el-input
-          ref="username"
-          v-model="loginForm.username"
-          placeholder="Username"
-          name="username"
+          ref="mobile"
+          v-model="loginForm.mobile"
+          placeholder="Mobile"
+          name="mobile"
           type="text"
           tabindex="1"
           auto-complete="on"
@@ -41,11 +43,11 @@
         </span>
       </el-form-item>
 
-      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">Login</el-button>
+      <el-button :loading="loading" type="primary" style="width:100%;margin-bottom:30px;" @click.native.prevent="handleLogin">登录</el-button>
 
       <div class="tips">
-        <span style="margin-right:20px;">username: admin</span>
-        <span> password: any</span>
+        <span style="margin-right:20px;">mobile:13800000002</span>
+        <span> password: 123456</span>
       </div>
 
     </el-form>
@@ -53,33 +55,26 @@
 </template>
 
 <script>
-import { validUsername } from '@/utils/validate'
+import { validMobile } from '@/utils/validate'
 
 export default {
   name: 'Login',
   data() {
-    const validateUsername = (rule, value, callback) => {
-      if (!validUsername(value)) {
-        callback(new Error('Please enter the correct user name'))
-      } else {
-        callback()
-      }
-    }
-    const validatePassword = (rule, value, callback) => {
-      if (value.length < 6) {
-        callback(new Error('The password can not be less than 6 digits'))
+    const validateMobile = (rule, value, callback) => {
+      if (!validMobile(value)) {
+        callback(new Error('请输入正确的手机号'))
       } else {
         callback()
       }
     }
     return {
       loginForm: {
-        username: 'admin',
-        password: '111111'
+        mobile: '13800000002',
+        password: '123456'
       },
       loginRules: {
-        username: [{ required: true, trigger: 'blur', validator: validateUsername }],
-        password: [{ required: true, trigger: 'blur', validator: validatePassword }]
+        mobile: [{ required: true, trigger: 'blur', validator: validateMobile }],
+        password: [{ required: true, trigger: 'blur', min: 6 , max: 16 , message: '请输入6-16位的密码' }]
       },
       loading: false,
       passwordType: 'password',
@@ -107,15 +102,30 @@ export default {
     },
     handleLogin() {
       // js兜底验证
-      this.$refs.loginForm.validate(valid => {
+      this.$refs.loginForm.validate(async valid => {
+        // 通过验证
         if (valid) {
-          this.loading = true
-          this.$store.dispatch('user/login', this.loginForm).then(() => {
-            this.$router.push({ path: this.redirect || '/' })
+          // this.loading = true
+          // this.$store.dispatch('user/login', this.loginForm).then(() => {
+          //   this.$router.push({ path: this.redirect || '/' })
+          //   this.loading = false
+          // }).catch(() => {
+          //   this.loading = false
+          // })
+          try {
+            this.loading = true
+            const res = await this.$store.dispatch('user/login', this.loginForm)
+            // 这里特别注意如果要使用这个res,需要在actions里面返回res才有res
+            this.$message.success(res.message)
+            // 又一大坑,如果跳转login时用的replace,query参数里面的keyValue的key会带引号,变得不可取,这里就拿不到
+            // !!!
+            this.$router.push({ path: this.$route.query.redirect || '/' })
             this.loading = false
-          }).catch(() => {
+          } catch (error) {
             this.loading = false
-          })
+            // 错误对象要用dir打印
+            console.dir(error)
+          }
         } else {
           console.log('error submit!!')
           return false
@@ -142,6 +152,7 @@ $cursor: #fff;
 
 /* reset element-ui css */
 .login-container {
+  background: url('~@/assets/common/login.jpg');
   .el-input {
     display: inline-block;
     height: 47px;

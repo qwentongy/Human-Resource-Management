@@ -5,7 +5,12 @@
     <hamburger :is-active="sidebar.opened" class="hamburger-container" @toggleClick="toggleSideBar" />
 
     <!-- 面包屑导航 -->
-    <breadcrumb class="breadcrumb-container" />
+    <!-- <breadcrumb class="breadcrumb-container" /> -->
+
+    <div class="company-name">
+      <span>江苏传播按脚科技有限公司</span>
+      <span class="ver-text">贵宾版</span>
+    </div>
 
     <!-- 右侧菜单容器 -->
     <div class="right-menu">
@@ -16,24 +21,25 @@
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <!-- 头像 -->
-          <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar">
+          <img :src="userHead" class="user-avatar">
+          <!-- 用户名 -->
+          <span>{{userName}}</span>
           <!-- 下拉箭头 -->
           <i class="el-icon-caret-bottom" />
         </div>
         <!-- 下拉菜单项 -->
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
-          <!-- Home导航，点击回首页 -->
           <router-link to="/">
             <el-dropdown-item>
-              主页
+              首页
             </el-dropdown-item>
           </router-link>
-          <a target="_blank" href="https://github.com/PanJiaChen/vue-admin-template/">
-            <el-dropdown-item>Github</el-dropdown-item>
-          </a>
-          <a target="_blank" href="https://panjiachen.github.io/vue-element-admin-site/#/">
-            <el-dropdown-item>Docs</el-dropdown-item>
-          </a>
+
+          <!-- Element UI 里面必须要阻止默认事件自定义点击事件才能生效(native) -->
+          <el-dropdown-item divided @click.native="logout">
+            <span style="display:block;">退出</span>
+          </el-dropdown-item>
+        </el-dropdown-menu>
           <!-- divided 分割线 
           在组件身上的事件都是自定义事件(别看名字叫click，也是自定义事件)，需要让组件内用
           $emit('click')来触发，我们才能绑定click事件
@@ -41,10 +47,6 @@
           解决：可以给自定义事件，让vue绑定原生的点击事件
           代码：只需要给原生事件.native修饰符 -> 把此事件绑定在组件根标签上绑定原生事件
           -->
-          <el-dropdown-item divided @click.native="logout">
-            <span style="display:block;">退出登录</span>
-          </el-dropdown-item>
-        </el-dropdown-menu>
       </el-dropdown>
     </div>
   </div>
@@ -63,7 +65,9 @@ export default {
   computed: {
     ...mapGetters([
       'sidebar',
-      'avatar'
+      'avatar',
+      'userName',
+      'userHead'
     ])
   },
   methods: {
@@ -71,8 +75,25 @@ export default {
       this.$store.dispatch('app/toggleSideBar')
     },
     async logout() {
-      await this.$store.dispatch('user/logout')
-      this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+        this.$confirm('确认退出登录吗?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(async() => {
+          await this.$store.dispatch('user/logout')
+          // this.$route.path 拿到的是路由地址
+          // this.$route.fullPath 拿到的是路由地址包括参数如params参数query参数
+          this.$router.push(`/login?redirect=${this.$route.fullPath}`)
+          this.$message({
+            type: 'success',
+            message: '退出登录成功!'
+          });
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消退出登录'
+          });          
+        });
     }
   }
 }
@@ -83,7 +104,7 @@ export default {
   height: 50px;
   overflow: hidden;
   position: relative;
-  background: #fff;
+  background: linear-gradient(to right, #3b6af2, #5b8cff);
   box-shadow: 0 1px 4px rgba(0,21,41,.08);
 
   .hamburger-container {
@@ -96,6 +117,22 @@ export default {
 
     &:hover {
       background: rgba(0, 0, 0, .025)
+    }
+  }
+
+  .company-name {
+    line-height: 46px;
+    height: 100%;
+    color: #fff;
+    display: inline-block;
+    .ver-text {
+      background-color: rgba(255,255,255,.2);
+      margin-left: 10px;
+      padding: 5px 10px;
+      border-radius: 15px;
+      font-size: 12px;
+      color: gold;
+      box-shadow: 0 0 20px 10px gold;
     }
   }
 
@@ -137,6 +174,12 @@ export default {
         margin-top: 5px;
         position: relative;
 
+        span {
+          position: relative;
+          bottom: 12px;
+          color: white;
+        }
+
         .user-avatar {
           cursor: pointer;
           width: 40px;
@@ -151,6 +194,7 @@ export default {
           top: 25px;
           font-size: 12px;
         }
+
       }
     }
   }
