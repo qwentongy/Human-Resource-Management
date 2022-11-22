@@ -51,10 +51,11 @@ export default {
       switch (cmd) {
         case "add":
           // 做添加子部门
-          this.$emit("add",this.data.id)
+          this.$emit("add", this.data.id);
           break;
         case "view":
           // 做查看部门
+          this.$emit("view", this.data.id);
           break;
         case "del":
           // 做删除
@@ -78,7 +79,7 @@ export default {
             this.$message.success("删除成功");
             // 刷新数据 - 子传父
             this.$emit("del");
-          } catch(error) {
+          } catch (error) {
             console.log(error);
           }
 
@@ -90,17 +91,23 @@ export default {
 </script>
 
 <style lang="scss" scoped>
-.tree-item {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  font-size: 14px;
-  .bold {
-    font-weight: 700;
-  }
-  .right {
-    .manager {
-      margin-right: 30px;
+.el-tree-node__content {
+  font-size: 16px;
+  line-height: 36px;
+  height: 36px;
+
+  .tree-item {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    .bold {
+      font-weight: 700;
+    }
+    .right {
+      .manager {
+        margin-right: 30px;
+      }
     }
   }
 }

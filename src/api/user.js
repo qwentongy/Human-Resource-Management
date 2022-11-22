@@ -47,3 +47,38 @@ export function addDeptAPI (data) {
 }
 
 
+// 获取部门负责人
+export function getChargeAPI () {
+  return request({
+      url: '/sys/user/simple'
+  })
+}
+
+
+// 封装一个获取部门详情的接口
+export function deptDetailAPI (id) {
+  return request({
+      url: `/company/department/${id}`
+  })
+}
+
+// 封装一个修改部门的接口
+export function editDeptAPI (data) {
+  return request({
+      url: `/company/department/${data.id}`,
+      method: 'put',
+      data
+  })
+}
+
+
+
+// 封装一个获取员工列表的请求
+// get请求用params，post请求用data
+export function empList (params) {
+
+  return request({
+      url: '/sys/user',
+      params
+  })
+}
