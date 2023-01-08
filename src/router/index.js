@@ -11,6 +11,7 @@ import social from './modules/social.js'
 import attendances from './modules/attendances.js'
 import approvals from './modules/approvals.js'
 import permission from './modules/permission.js'
+import vxe from './modules/vxe.js'
 
 Vue.use(Router)
 
@@ -47,6 +48,7 @@ const asyncRoutes = [
   attendances,
   salarys,
   social,
+  vxe
 ]
 
 /**

@@ -82,3 +82,22 @@ export function empList (params) {
       params
   })
 }
+
+
+
+// 封装一个删除员工的请求
+export function delEmp (id) {
+  return request({
+      url: `/sys/user/${id}`,
+      method: 'delete'
+  })
+}
+
+
+
+// 封装一个获取员工信息的请求
+export function lookAPI (id) {
+  return request({
+      url: `/employees/${id}/personalInfo`,
+  })
+}
