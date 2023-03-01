@@ -14,6 +14,9 @@ import App from "./App";
 import store from "./store";
 import router from "./router";
 
+import VXETable from 'vxe-table'
+import 'vxe-table/lib/style.css'
+
 import "@/icons"; // icon
 import "@/permission"; // permission control
 
@@ -37,6 +40,8 @@ Vue.use(ElementUI, { locale });
 Vue.use(ElementUI);
 
 Vue.use(Antd);
+
+Vue.use(VXETable)
 
 Vue.config.productionTip = false;
 

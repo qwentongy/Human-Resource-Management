@@ -4,7 +4,7 @@ import Router from 'vue-router'
 // 动态路由
 // 导入动态的路由
 import departments from './modules/departments.js'
-import employees from './modules/employees.js' 
+import employees from './modules/employees.js'
 import setting from './modules/setting.js'
 import salarys from './modules/salarys.js'
 import social from './modules/social.js'
@@ -36,7 +36,6 @@ import Layout from '@/layout'
     activeMenu: '/example/list'  if set path, the sidebar will highlight the path you set
   }
  */
-
 
 // 准备一个动态路由表
 const asyncRoutes = [
@@ -74,13 +73,13 @@ export const constantRoutes = [
     // 为了在网址中的路由好看
     // 只有一级路由需要写/,子级可以省略/不写
     path: '/',
-    component: Layout,  // 一级路由挂载点
+    component: Layout, // 一级路由挂载点
     redirect: '/dashboard',
     children: [{
       path: 'dashboard',
       name: 'Dashboard',
-      component: () => import('@/views/dashboard/index'),   // 挂载layout右下角(AppMain,vue中)
-      meta: { title: '首页', icon: 'dashboard' }   // meta固定名字(内置) 用来给当前路由对象添加额外信息
+      component: () => import('@/views/dashboard/index'), // 挂载layout右下角(AppMain,vue中)
+      meta: { title: '首页', icon: 'dashboard' } // meta固定名字(内置) 用来给当前路由对象添加额外信息
     }]
   },
 
@@ -91,10 +90,10 @@ export const constantRoutes = [
 const createRouter = () => new Router({
   // mode: 'history', // require service support
   scrollBehavior: () => ({ y: 0 }),
-  routes: [...constantRoutes , ...asyncRoutes ]  // 传入路由规则数组(路由表)
+  routes: [...constantRoutes, ...asyncRoutes] // 传入路由规则数组(路由表)
 })
 
-const router = createRouter()   // 路由对象
+const router = createRouter() // 路由对象
 
 // Detail see: https://github.com/vuejs/vue-router/issues/1234#issuecomment-357941465
 export function resetRouter() {

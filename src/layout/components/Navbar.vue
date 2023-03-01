@@ -8,8 +8,8 @@
     <!-- <breadcrumb class="breadcrumb-container" /> -->
 
     <div class="company-name">
-      <span>江苏传播按脚科技有限公司</span>
-      <span class="ver-text">贵宾版</span>
+      <span>个人博客后台管理系统</span>
+      <!-- <span class="ver-text">贵宾版</span> -->
     </div>
 
     <!-- 右侧菜单容器 -->
